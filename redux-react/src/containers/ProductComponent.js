@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, connect } from "react-redux";
 
-const ProductComponent = () => {
-    const products = useSelector((state) => state.listOfProducts.products);
-    const renderList = products.map((product) => {
+const ProductComponent = (props) => {
+    // const products = useSelector((state) => state.listOfProducts.products);
+    const renderList = props.products.map((product) => {
         const { id, title, image, price, category } = product;
         return (
             <div className="four wide column" key={id}>
@@ -29,5 +29,10 @@ const ProductComponent = () => {
         <>{renderList}</>
     );
 }
+const mapStateToProps = (state) => {
+    return {
+        products : state.listOfProducts.products,
+    }
+}
 
-export default ProductComponent;
+export default connect(mapStateToProps)(ProductComponent);

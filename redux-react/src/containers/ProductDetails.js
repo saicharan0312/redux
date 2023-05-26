@@ -5,29 +5,29 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { selectedProduct, removeSelectedProduct } from ".././redux/actions/productActions";
 
-const ProductDetails = () => {
-    const product = useSelector((state) => state.product);
+const ProductDetails = (props) => {
+    //const product = useSelector((state) => state.product);
     const { productId } = useParams();
-    const {image, title, price, category, description} = product;
-    const dispatch = useDispatch();
+    const {image, title, price, category, description} = props.product;
+    //const dispatch = useDispatch();
     useEffect(() => {
         const fetchProductDetail = async () => {
             const response = await axios
             .get(`https://fakestoreapi.com/products/${productId}`)
             .catch((err) => { console.log("Error ",err); })
-            dispatch(selectedProduct(response.data));
+            props.selectedProduct1(response.data);
         };
         if(productId && productId!=="") {
             fetchProductDetail();
         }
         console.log('i fire once');
         return () => {
-            dispatch(removeSelectedProduct());
+            props.removeSelectedProduct1();
         };
     },[productId]);
     return (
         <div className="ui grid container">
-          { Object.keys(product).length === 0 ? (
+          { Object.keys(props.product).length === 0 ? (
               <div>
                 <div> Loading </div>
                 <div> Loading </div>
@@ -65,18 +65,17 @@ const ProductDetails = () => {
     )
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         product : state.product
-//     }
-// }
+const mapStateToProps = state => {
+    return {
+        product : state.product
+    }
+}
 
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         dispatch: (product) => dispatch(selectedProduct(product))
-//     }
-// }
+const mapDispatchToProps = dispatch => {
+    return {
+        selectedProduct1: (product) => dispatch(selectedProduct(product)),
+        removeSelectedProduct1: () => dispatch(removeSelectedProduct()),
+    }
+}
 
-//export default connect(mapStateToProps, mapDispatchToProps)(ProductDetails);
-
-export default ProductDetails;
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetails);
